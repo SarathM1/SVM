@@ -8,4 +8,7 @@ using SVM in code: http://scikit-learn.org/stable/modules/svm.html#svm
 
 sklearn.metrics: http://scikit-learn.org/stable/modules/classes.html#sklearn-metrics-metrics
 
+OneClass Svm: http://scikit-learn.org/stable/modules/generated/sklearn.svm.OneClassSVM.html#sklearn-svm-oneclasssvm
+OneClassSVM : http://scikit-learn.org/stable/modules/svm.html#density-estimation-novelty-detection
+
 
