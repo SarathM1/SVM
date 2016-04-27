@@ -4,4 +4,3 @@ sudo apt-get install python-scikits-learn
 (or pip install -U scikit-learn )
 
 sudo apt-get install python-matplotlib
-sudo apt-get install python-mpltoolkits.basemap
