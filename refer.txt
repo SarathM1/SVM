@@ -1,0 +1,11 @@
+The sklearn.datasets module includes utilities to load datasets, including methods to load and fetch popular reference datasets. 
+It also features some artificial data generators.
+
+Bunch: They are just useful for loading the internal sample datasets of scikit-learn.
+
+About SVM: https://en.wikipedia.org/wiki/Support_vector_machine
+using SVM in code: http://scikit-learn.org/stable/modules/svm.html#svm
+
+sklearn.metrics: http://scikit-learn.org/stable/modules/classes.html#sklearn-metrics-metrics
+
+
