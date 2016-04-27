@@ -15,13 +15,6 @@ from sklearn.datasets import fetch_species_distributions
 from sklearn.datasets.species_distributions import construct_grids
 from sklearn import svm, metrics
 
-# if basemap is available, we'll use it.
-# otherwise, we'll improvise later...
-try:
-    from mpl_toolkits.basemap import Basemap
-    basemap = True
-except ImportError:
-    basemap = False
 
 print(__doc__)
 
@@ -54,12 +47,7 @@ def plot_species_distribution(species=("bradypus_variegatus_0",
     """
     Plot the species distribution.
     """
-    if len(species) > 2:
-        print("Note: when more than two species are provided,"
-              " only the first two will be used")
-
-    t0 = time()
-
+    
     # Load the compressed data
     data = fetch_species_distributions()
 
@@ -106,20 +94,12 @@ def plot_species_distribution(species=("bradypus_variegatus_0",
 
         # Plot map of South America
         plt.subplot(1, 2, i + 1)
-        if basemap:
-            print(" - plot coastlines using basemap")
-            m = Basemap(projection='cyl', llcrnrlat=Y.min(),
-                        urcrnrlat=Y.max(), llcrnrlon=X.min(),
-                        urcrnrlon=X.max(), resolution='c')
-            m.drawcoastlines()
-            m.drawcountries()
-        else:
-            print(" - plot coastlines from coverage")
-            plt.contour(X, Y, land_reference,
-                        levels=[-9999], colors="k",
-                        linestyles="solid")
-            plt.xticks([])
-            plt.yticks([])
+        print(" - plot coastlines from coverage")
+        plt.contour(X, Y, land_reference,
+                    levels=[-9999], colors="k",
+                    linestyles="solid")
+        plt.xticks([])
+        plt.yticks([])
 
         print(" - predict species distribution")
 
@@ -151,7 +131,6 @@ def plot_species_distribution(species=("bradypus_variegatus_0",
         plt.legend()
         plt.title(species.name)
         plt.axis('equal')
-
         # Compute AUC with regards to background points
         pred_background = Z[background_points[0], background_points[1]]
         pred_test = clf.decision_function((species.cov_test - mean)
@@ -163,7 +142,6 @@ def plot_species_distribution(species=("bradypus_variegatus_0",
         plt.text(-35, -70, "AUC: %.3f" % roc_auc, ha="right")
         print("\n Area under the ROC curve : %f" % roc_auc)
 
-    print("\ntime elapsed: %.2fs" % (time() - t0))
 
 
 plot_species_distribution()
