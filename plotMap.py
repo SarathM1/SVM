@@ -41,6 +41,26 @@ def draw_map(data, xgrid, ygrid, X, Y, land_reference):
             levels=[-9999], colors="k",
             linestyles="solid")
 
+def SVM_fun(data, land_reference, mean, std):
+    # Fit OneClassSVM
+    train_cover_std = (species.cov_train - mean) / std
+    print " - fit OneClassSVM ... "
+    clf = svm.OneClassSVM(nu=0.1, kernel="rbf", gamma=0.5)
+    clf.fit(train_cover_std)
+    print "done"
+
+    print(" - predict species distribution")
+
+    # Predict species distribution using the training data
+
+    # We'll predict only for the land points.
+    idx = np.where(land_reference > -9999)
+    coverages_land = data.coverages[:, idx[0], idx[1]].T
+
+    pred = clf.decision_function((coverages_land - mean) / std)[:, 0]
+    
+    return pred, clf, idx
+
 def main():
     global species
     # Extracting Data from web
@@ -64,24 +84,10 @@ def main():
         # Standardize features
         mean = species.cov_train.mean(axis=0)
         std = species.cov_train.std(axis=0)
-        train_cover_std = (species.cov_train - mean) / std
         
-        # Fit OneClassSVM
-        print " - fit OneClassSVM ... "
-        clf = svm.OneClassSVM(nu=0.1, kernel="rbf", gamma=0.5)
-        clf.fit(train_cover_std)
-        print "done"
-
-        print(" - predict species distribution")
-
-        # Predict species distribution using the training data
+        pred, clf, idx = SVM_fun(data, land_reference, mean, std)
+  
         Z = np.ones((data.Ny, data.Nx), dtype=np.float64)
-
-        # We'll predict only for the land points.
-        idx = np.where(land_reference > -9999)
-        coverages_land = data.coverages[:, idx[0], idx[1]].T
-
-        pred = clf.decision_function((coverages_land - mean) / std)[:, 0]
         Z *= pred.min()
         Z[idx[0], idx[1]] = pred
 
@@ -100,7 +106,7 @@ def main():
                     s=2 ** 2, c='black',
                     marker='x', label='test')
         plt.legend()
-        plt.title(species.name)
+        plt.title('Title')
         plt.axis('equal')
         
         # Compute AUC with regards to background points
