@@ -99,7 +99,12 @@ def main():
     input_data = fetch_species_distributions()
     xgrid, ygrid = construct_grids(input_data)
     X, Y = np.meshgrid(xgrid, ygrid[::-1])
-    land_reference = input_data.coverages[6]
+
+    f = file("data_coverages.bin", "rb")
+    land_reference = np.load(f)
+    f.close()
+
+    # land_reference = input_data.coverages[6]
     BV_bunch = create_species_bunch("bradypus_variegatus_0",
                                     input_data.train, input_data.test,
                                     input_data.coverages, xgrid, ygrid)
