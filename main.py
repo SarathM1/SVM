@@ -1,5 +1,3 @@
-from time import time
-
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.datasets import fetch_species_distributions
@@ -9,6 +7,7 @@ from sklearn import svm, metrics
 
 """from sklearn.datasets.base import Bunch
 from sklearn import svm, metrics"""
+
 
 def create_species_bunch(species_name, train, test, coverages, xgrid, ygrid):
     """Create a bunch with information about a particular organism
@@ -32,13 +31,14 @@ def create_species_bunch(species_name, train, test, coverages, xgrid, ygrid):
 
     return bunch
 
+
 def draw_map(input_data, xgrid, ygrid, X, Y, land_reference):
     # Plot map of South America"""
     plt.subplot(1, 1, 1)
     print(" - plot coastlines from coverage")
-    plt.contour(X, Y, land_reference,
-            levels=[-9999], colors="k",
-            linestyles="solid")
+    plt.contour(X, Y, land_reference, levels=[-9999], colors="k",
+                linestyles="solid")
+
 
 def SVM_fun(input_data, land_reference, mean, std, data):
     # Fit OneClassSVM
@@ -57,8 +57,9 @@ def SVM_fun(input_data, land_reference, mean, std, data):
     coverages_land = input_data.coverages[:, idx[0], idx[1]].T
 
     pred = clf.decision_function((coverages_land - mean) / std)[:, 0]
-    
+
     return pred, clf, idx
+
 
 def compute_AUC(Z, input_data, clf, mean, std, data):
     # Compute AUC with regards to background points
@@ -68,8 +69,7 @@ def compute_AUC(Z, input_data, clf, mean, std, data):
                               np.random.randint(low=0, high=input_data.Nx,
                                                 size=10000)].T
     pred_background = Z[background_points[0], background_points[1]]
-    pred_test = clf.decision_function((data.cov_test - mean)
-                                        / std)[:, 0]
+    pred_test = clf.decision_function((data.cov_test - mean) / std)[:, 0]
     scores = np.r_[pred_test, pred_background]
     y = np.r_[np.ones(pred_test.shape), np.zeros(pred_background.shape)]
     fpr, tpr, thresholds = metrics.roc_curve(y, scores)
@@ -77,10 +77,12 @@ def compute_AUC(Z, input_data, clf, mean, std, data):
     plt.text(-35, -70, "AUC: %.3f" % roc_auc, ha="right")
     print("\n Area under the ROC curve : %f" % roc_auc)
 
+
 def mark_Prediction(X, Y, Z, levels):
     # plot contours of the prediction
     plt.contourf(X, Y, Z, levels=levels, cmap=plt.cm.Reds)
     plt.colorbar(format='%.2f')
+
 
 def mark_Points(data):
     # scatter training/testing points
@@ -90,6 +92,8 @@ def mark_Points(data):
     plt.scatter(data.pts_test['dd long'], data.pts_test['dd lat'],
                 s=2 ** 2, c='black',
                 marker='x', label='test')
+
+
 def main():
     # Extracting Data from web
     input_data = fetch_species_distributions()
@@ -108,9 +112,9 @@ def main():
         # Standardize features
         mean = data.cov_train.mean(axis=0)
         std = data.cov_train.std(axis=0)
-        
+
         pred, clf, idx = SVM_fun(input_data, land_reference, mean, std, data)
-  
+
         Z = np.ones((input_data.Ny, input_data.Nx), dtype=np.float64)
         Z *= pred.min()
         Z[idx[0], idx[1]] = pred
@@ -121,13 +125,12 @@ def main():
         mark_Prediction(X, Y, Z, levels)
 
         mark_Points(data)
-        
+
         plt.legend()
         plt.title('Title')
         plt.axis('equal')
-        
+
         compute_AUC(Z, input_data, clf, mean, std, data)
     plt.show()
 if __name__ == "__main__":
     main()
-
