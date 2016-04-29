@@ -123,6 +123,7 @@ def main():
         mark_Prediction(X, Y, Z, levels)
 
         mark_Points(species)
+        
         plt.legend()
         plt.title('Title')
         plt.axis('equal')
