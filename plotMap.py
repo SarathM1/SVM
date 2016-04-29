@@ -25,6 +25,4 @@ print(" - plot coastlines from coverage")
 plt.contour(X, Y, land_reference,
         levels=[-9999], colors="k",
         linestyles="solid")
-plt.xticks([])
-plt.yticks([])
 plt.show()
