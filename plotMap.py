@@ -33,14 +33,7 @@ def create_species_bunch(species_name, train, test, coverages, xgrid, ygrid):
 
     return bunch
 
-def draw_map(data):
-    land_reference = data.coverages[6]
-
-    # Set up the data grid
-    xgrid, ygrid = construct_grids(data)
-
-    # The grid in x,y coordinates
-    X, Y = np.meshgrid(xgrid, ygrid[::-1])
+def draw_map(data, xgrid, ygrid, X, Y, land_reference):
     # Plot map of South America"""
     plt.subplot(1, 1, 1)
     print(" - plot coastlines from coverage")
@@ -63,7 +56,9 @@ def main():
                                     data.train, data.test,
                                     data.coverages, xgrid, ygrid)
 
-    draw_map(data)
+    draw_map(data, xgrid, ygrid, X, Y, land_reference)
+    plt.xticks([])
+    plt.yticks([])
 
     for i, species in enumerate([BV_bunch]):
         # Standardize features
