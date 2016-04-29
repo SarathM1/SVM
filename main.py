@@ -1,7 +1,5 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from sklearn.datasets import fetch_species_distributions
-from sklearn.datasets.species_distributions import construct_grids
 from sklearn.datasets.base import Bunch
 from sklearn import svm, metrics
 
@@ -32,7 +30,7 @@ def create_species_bunch(species_name, train, test, coverages, xgrid, ygrid):
     return bunch
 
 
-def draw_map(input_data, xgrid, ygrid, X, Y, land_reference):
+def draw_map(X, Y, land_reference):
     # Plot map of South America"""
     plt.subplot(1, 1, 1)
     print(" - plot coastlines from coverage")
@@ -40,7 +38,7 @@ def draw_map(input_data, xgrid, ygrid, X, Y, land_reference):
                 linestyles="solid")
 
 
-def SVM_fun(input_data, land_reference, mean, std, data):
+def SVM_fun(coverage_data, land_reference, mean, std, data):
     # Fit OneClassSVM
     train_cover_std = (data.cov_train - mean) / std
     print " - fit OneClassSVM ... "
@@ -54,19 +52,19 @@ def SVM_fun(input_data, land_reference, mean, std, data):
 
     # We'll predict only for the land points.
     idx = np.where(land_reference > -9999)
-    coverages_land = input_data.coverages[:, idx[0], idx[1]].T
+    coverages_land = coverage_data[:, idx[0], idx[1]].T
 
     pred = clf.decision_function((coverages_land - mean) / std)[:, 0]
 
     return pred, clf, idx
 
 
-def compute_AUC(Z, input_data, clf, mean, std, data):
+def compute_AUC(Z, clf, mean, std, data, Nx_data, Ny_data):
     # Compute AUC with regards to background points
     np.random.seed(13)
-    background_points = np.c_[np.random.randint(low=0, high=input_data.Ny,
+    background_points = np.c_[np.random.randint(low=0, high=Ny_data,
                                                 size=10000),
-                              np.random.randint(low=0, high=input_data.Nx,
+                              np.random.randint(low=0, high=Nx_data,
                                                 size=10000)].T
     pred_background = Z[background_points[0], background_points[1]]
     pred_test = clf.decision_function((data.cov_test - mean) / std)[:, 0]
@@ -94,22 +92,29 @@ def mark_Points(data):
                 marker='x', label='test')
 
 
+def load_from_file(file_name):
+    f = file(file_name, "rb")
+    data1 = np.load(f)
+    data2 = np.load(f)
+    data3 = np.load(f)
+    data4 = np.load(f)
+    data5 = np.load(f)
+    data6 = np.load(f)
+    data7 = np.load(f)
+    data8 = np.load(f)
+    f.close()
+    return data1, data2, data3, data4, data5, data6, data7, data8
+
+
 def main():
-    # Extracting Data from web
-    input_data = fetch_species_distributions()
-    xgrid, ygrid = construct_grids(input_data)
+    xgrid, ygrid, land_reference, coverages_data, test_data, train_data, Nx_data, Ny_data = load_from_file("data_coverages.bin")
     X, Y = np.meshgrid(xgrid, ygrid[::-1])
 
-    f = file("data_coverages.bin", "rb")
-    land_reference = np.load(f)
-    f.close()
-
-    # land_reference = input_data.coverages[6]
     BV_bunch = create_species_bunch("bradypus_variegatus_0",
-                                    input_data.train, input_data.test,
-                                    input_data.coverages, xgrid, ygrid)
+                                    train_data, test_data,
+                                    coverages_data, xgrid, ygrid)
 
-    draw_map(input_data, xgrid, ygrid, X, Y, land_reference)
+    draw_map(X, Y, land_reference)
     plt.xticks([])
     plt.yticks([])
 
@@ -118,9 +123,9 @@ def main():
         mean = data.cov_train.mean(axis=0)
         std = data.cov_train.std(axis=0)
 
-        pred, clf, idx = SVM_fun(input_data, land_reference, mean, std, data)
+        pred, clf, idx = SVM_fun(coverages_data, land_reference, mean, std, data)
 
-        Z = np.ones((input_data.Ny, input_data.Nx), dtype=np.float64)
+        Z = np.ones((Ny_data, Nx_data), dtype=np.float64)
         Z *= pred.min()
         Z[idx[0], idx[1]] = pred
 
@@ -135,7 +140,7 @@ def main():
         plt.title('Title')
         plt.axis('equal')
 
-        compute_AUC(Z, input_data, clf, mean, std, data)
+        compute_AUC(Z, clf, mean, std, data, Nx_data, Ny_data)
     plt.show()
 if __name__ == "__main__":
     main()
