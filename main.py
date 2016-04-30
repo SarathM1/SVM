@@ -109,8 +109,7 @@ def load_from_file(file_name):
 def main():
     xgrid, ygrid, land_reference, coverages_data, test_data, train_data, Nx_data, Ny_data = load_from_file("database.bin")
     X, Y = np.meshgrid(xgrid, ygrid[::-1])
-
-    BV_bunch = create_species_bunch("patient_18",
+    BV_bunch = create_species_bunch("patient_3",
                                     train_data, test_data,
                                     coverages_data, xgrid, ygrid)
 

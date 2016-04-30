@@ -31,17 +31,46 @@ def load_from_file(file_name):
 
 
 def replace(data):
-    x = []
-    x.append(data[0][0])
-    for i in range(len(data)):
-        if data[i][0] not in x:
-            x.append(data[i][0])
-            # print data[i][0]
+    x = [ 'bradypus_variegatus_0',
+            'microryzomys_minutus_0',
+            'bradypus_variegatus_1',
+            'microryzomys_minutus_1',
+            'bradypus_variegatus_2',
+            'microryzomys_minutus_2',
+            'bradypus_variegatus_3',
+            'microryzomys_minutus_3',
+            'bradypus_variegatus_4',
+            'microryzomys_minutus_4',
+            'bradypus_variegatus_5',
+            'microryzomys_minutus_5',
+            'bradypus_variegatus_6',
+            'microryzomys_minutus_6',
+            'bradypus_variegatus_7',
+            'microryzomys_minutus_7',
+            'bradypus_variegatus_8',
+            'microryzomys_minutus_8',
+            'bradypus_variegatus_9',
+            'microryzomys_minutus_9',
+            ]
+   
+    """
+    print '[',
+    for each in x:
+        print "'"+each+"'"+','
+    print ']'
+    """
+
     for i in range(20):
+        cnt = 0
+        print x[i]
         for j in range(len(data)):
             if data[j][0] == x[i]:
-                # print data[j][0], '=>', 'patient_' + str(i)
+                print data[j][0], '=>', 'patient_' + str(i)
+                cnt+=1
                 data[j][0] = 'patient_' + str(i)
+                flag = j
+        # print "Count = ",cnt
+        print data[flag][0], "Count = ", cnt
 
 # Extracting Data from web
 data = fetch_species_distributions()
