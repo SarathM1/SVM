@@ -84,6 +84,16 @@ def mark_Prediction(X, Y, Z, levels):
     plt.colorbar(format='%.2f')
 
 
+def mark_Points(data):
+    # scatter training/testing points
+    plt.scatter(data.pts_train['dd long'], data.pts_train['dd lat'],
+                s=2 ** 2, c='black',
+                marker='^', label='train')
+    plt.scatter(data.pts_test['dd long'], data.pts_test['dd lat'],
+                s=2 ** 2, c='black',
+                marker='x', label='test')
+
+
 def load_from_file(file_name):
     f = file('../'+file_name, "rb")
     data1 = np.load(f)
@@ -123,6 +133,7 @@ def main():
         levels = np.linspace(Z.min(), Z.max(), 25)
         Z[land_reference == -9999] = -9999
 
+        mark_Points(data)
         mark_Prediction(X, Y, Z, levels)
 
         plt.legend()

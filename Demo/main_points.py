@@ -78,8 +78,6 @@ def compute_AUC(Z, clf, mean, std, data, Nx_data, Ny_data):
     print("\n Area under the ROC curve : %f" % roc_auc)
 
 
-
-
 def mark_Points(data):
     # scatter training/testing points
     plt.scatter(data.pts_train['dd long'], data.pts_train['dd lat'],
