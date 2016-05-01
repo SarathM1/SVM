@@ -65,9 +65,9 @@ def replace(data):
         print x[i]
         for j in range(len(data)):
             if data[j][0] == x[i]:
-                print data[j][0], '=>', 'patient_' + str(i)
+                print data[j][0], '=>', 'disease_' + str(i)
                 cnt+=1
-                data[j][0] = 'patient_' + str(i)
+                data[j][0] = 'disease_' + str(i)
                 flag = j
         # print "Count = ",cnt
         print data[flag][0], "Count = ", cnt

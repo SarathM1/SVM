@@ -6,7 +6,7 @@ from sklearn import svm, metrics
 """from sklearn.datasets.base import Bunch
 from sklearn import svm, metrics"""
 
-
+DISEASE_NAME = 'disease_0'
 def create_species_bunch(species_name, train, test, coverages, xgrid, ygrid):
     """Create a bunch with information about a particular organism
 
@@ -109,7 +109,7 @@ def load_from_file(file_name):
 def main():
     xgrid, ygrid, land_reference, coverages_data, test_data, train_data, Nx_data, Ny_data = load_from_file("database.bin")
     X, Y = np.meshgrid(xgrid, ygrid[::-1])
-    BV_bunch = create_species_bunch("patient_3",
+    BV_bunch = create_species_bunch(DISEASE_NAME,
                                     train_data, test_data,
                                     coverages_data, xgrid, ygrid)
 
@@ -136,7 +136,7 @@ def main():
         mark_Points(data)
 
         plt.legend()
-        plt.title('Title')
+        plt.title(DISEASE_NAME)
         plt.axis('equal')
 
         compute_AUC(Z, clf, mean, std, data, Nx_data, Ny_data)
