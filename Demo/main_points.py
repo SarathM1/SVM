@@ -9,19 +9,19 @@ from sklearn import svm, metrics"""
 DISEASE_NAME = 'disease_0'
 
 
-def create_species_bunch(species_name, train, test, coverages, xgrid, ygrid):
+def create_disease_bunch(disease_name, train, test, coverages, xgrid, ygrid):
     """Create a bunch with information about a particular organism
 
     This will use the test/train record arrays to extract the
-    data specific to the given species name.
+    data specific to the given disease name.
     """
-    bunch = Bunch(name=' '.join(species_name.split("_")[:2]))
-    species_name = species_name.encode('ascii')
+    bunch = Bunch(name=' '.join(disease_name.split("_")[:2]))
+    disease_name = disease_name.encode('ascii')
     points = dict(test=test, train=train)
 
     for label, pts in points.items():
-        # choose points associated with the desired species
-        pts = pts[pts['species'] == species_name]
+        # choose points associated with the desired disease
+        pts = pts[pts['species'] == disease_name]
         bunch['pts_%s' % label] = pts
 
         # determine coverage values for each of the training & testing points
@@ -107,7 +107,7 @@ def load_from_file(file_name):
 def main():
     xgrid, ygrid, land_reference, coverages_data, test_data, train_data, Nx_data, Ny_data = load_from_file("database.bin")
     X, Y = np.meshgrid(xgrid, ygrid[::-1])
-    BV_bunch = create_species_bunch(DISEASE_NAME,
+    BV_bunch = create_disease_bunch(DISEASE_NAME,
                                     train_data, test_data,
                                     coverages_data, xgrid, ygrid)
 
